@@ -143,7 +143,9 @@ When a lab instructs the learner to create a **Custom Prompt tool** (Add a tool 
 
 The runtime data path is: `user utterance → Activity.Text (system) → Custom value mapping → Query input variable → prompt's [Query] chip`. This is the only path that (a) avoids the system-prompt content filter and (b) delivers the user's live message to the model.
 
-**When the lab markdown omits these steps** (UC4 of `mcs-tools` did, as of audit run 2026-05-25T1545Z-7a2b), file a finding describing the missing instructions, with a suggested correction that inserts the Prompt-Builder `Add content → Text` step and the Inputs `System.Activity.Text` mapping.
+**This is a plugin/auditor obligation, not a lab requirement.** The mcs-tools lab (UC4) describes the correct sequence in its markdown. The audit run that prompted this cookbook section failed because the auditor typed over the placeholder with prose instead of inserting the Text chip — that's an auditor execution bug, not a lab content bug. The audit driver MUST follow this sequence whenever a Custom Prompt step appears, even if the lab text is correct, because typing over a placeholder is the path of least resistance and the failure mode is silent until boundary queries fire content filter [105].
+
+If a *future* lab introduces a Custom Prompt step but omits these instructions, file a finding describing the missing guidance with a suggested correction that adds the Prompt-Builder `Add content → Text` step and the Inputs `System.Activity.Text` mapping. Do not file such a finding for labs (like `mcs-tools`) where the lab markdown already covers it.
 
 #### Default Greeting topic intercepts orchestrator routing
 
@@ -154,7 +156,7 @@ Two fixes, both should be in the lab text:
 1. **Turn off the Greeting topic** on the Topics tab before testing. The toggle is on the topic row in the System topics list.
 2. **Use non-greeting test utterances** as alternates ("Tell me about cats", "The weather today.") so the learner can confirm routing even if they forget step 1.
 
-**When the lab markdown omits the "disable Greeting topic" step but the test utterances are greeting-shaped** (UC4 of `mcs-tools`, as of audit run 2026-05-25T1545Z-7a2b), file a finding.
+**When the lab markdown omits the "disable Greeting topic" step but the test utterances are greeting-shaped** — file a finding. As of audit run 2026-05-25T1545Z-7a2b, this is true of UC4 in `mcs-tools` (test utterances start with "Hey..." which trips the default Greeting topic) and an accompanying lab issue + PR was filed against `microsoft/mcs-labs`. Unlike the Custom Prompt pattern above, this *is* a lab content gap, not a plugin gap.
 
 ### M365 Copilot / Agent Builder
 
